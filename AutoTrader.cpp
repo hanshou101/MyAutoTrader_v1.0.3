@@ -37,6 +37,10 @@ CThostFtdcTraderApi *pUserApi;
 // MdApi对象
 CThostFtdcMdApi *pMdApi;
 
+/**
+ * 定义了常量和全局变量:包括运行模式、CTP的前置地址、用户名密码等。
+ */
+
 int		RunMode = 0;		//运行模式选择，0=本地测试，1=实盘运行 ，提示Common.h：设置InstrumentID_En=0，实盘在线仿真模式，InstrumentID_En=1，实盘在线交易模式，
 
 // 配置参数
@@ -75,23 +79,36 @@ void main(void)
 {
 	void Erasefiles();
 	bool ReadMdConfiguration();	
-	bool ReadTradeConfiguration();	
+	bool ReadTradeConfiguration();
+    // _record0用于记录日志。
 	void _record0(char *txt);
 	void Sniffer();
 	void Trading();
 	void test();
+    // SendOrder()用于发送订单。
 	void SendOrder(TThostFtdcInstrumentIDType FuturesId,int BuySell,int OpenClose,int i);
 
 
 	JustRun = true;													//正在启动标志
+    /**
+     * Erasefiles()清除文件。
+     */
 	Erasefiles();
 	Sleep(2000);
 
 	cerr << "--->>> " << "Welcom MyAutoTrader System!" << endl;
 	cerr << "--->>> " << "Version 1.0.3!" << endl;
 
+    /**
+     * ReadMdConfiguration()和ReadTradeConfiguration()用于读取配置。
+     */
 	ReadMdConfiguration();
 	Sleep(2000);
+
+    /**
+     * 调用函数初始化UserApi和MdApi对象,连接行情和交易前置。
+     */
+
 	// 初始化UserApi
 	pUserApi = CThostFtdcTraderApi::CreateFtdcTraderApi("./thosttraderapi.dll");			// 创建UserApi//"./thosttraderapi.dll"
 	CTraderSpi* pUserSpi = new CTraderSpi();
@@ -115,7 +132,7 @@ void main(void)
 	pMdApi->RegisterFront(FRONT_ADDR_1B);							// connect
 	//pMdApi->RegisterFront(FRONT_ADDR_2B);							// connect
 
-	if (RunMode)
+	if (RunMode)    // 实盘
 	{
 		pMdApi->Init();
 		cerr << "--->>> " << "Initialing MdApi" << endl;
@@ -133,13 +150,26 @@ void main(void)
 	Sleep(1000);
 	cerr << "--->>> " << "初始化完成!" << endl;
 
+    /**
+     * 循环调用Sniffer()和Trading()函数。
+     */
 	while(RunMode)	//实盘
 	{
+        /**
+         * Sniffer()可能是行情采集和处理函数。
+         */
 		Sniffer();
+
+        /**
+         * Trading()可能是生成和发送交易指令的函数。
+         */
 		Trading();
 		Sleep(050);
 	}
 
+    /**
+     * 有一个本地测试模式,在该模式下调用test()函数进行测试。
+     */
 	while(!RunMode)	//本地测试
 	{
 		if (JustRun==true)

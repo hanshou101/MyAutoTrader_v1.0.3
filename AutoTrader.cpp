@@ -10,6 +10,11 @@
 /////////////////////////////////////////////////////////////////////////
 // AutoTrader.cpp : ¶¨Òå¿ØÖÆÌ¨Ó¦ÓÃ³ÌĞòµÄÈë¿Úµã¡£
 //
+
+/**
+ * °üº¬±ØÒªµÄÍ·ÎÄ¼şºÍÃüÃû¿Õ¼ä
+ */
+
 #include <stdio.h>
 #include <iostream>
 #include <fstream>
@@ -32,6 +37,10 @@ using namespace std;
 
 #pragma warning(disable : 4996)
 
+/**
+ * ÉùÃ÷ÁËÈ«¾ÖµÄAPI¶ÔÏóÖ¸ÕëpUserApiºÍpMdApi
+ */
+
 // UserApi¶ÔÏó
 CThostFtdcTraderApi *pUserApi;
 // MdApi¶ÔÏó
@@ -39,9 +48,16 @@ CThostFtdcMdApi *pMdApi;
 
 /**
  * ¶¨ÒåÁË³£Á¿ºÍÈ«¾Ö±äÁ¿:°üÀ¨ÔËĞĞÄ£Ê½¡¢CTPµÄÇ°ÖÃµØÖ·¡¢ÓÃ»§ÃûÃÜÂëµÈ¡£
+ *
+ * ÉùÃ÷ÁËÊµÅÌºÍ·ÂÕæÁ½ÖÖÔËĞĞÄ£Ê½µÄÇĞ»»±äÁ¿RunMode  ¡£
  */
 
 int		RunMode = 0;		//ÔËĞĞÄ£Ê½Ñ¡Ôñ£¬0=±¾µØ²âÊÔ£¬1=ÊµÅÌÔËĞĞ £¬ÌáÊ¾Common.h£ºÉèÖÃInstrumentID_En=0£¬ÊµÅÌÔÚÏß·ÂÕæÄ£Ê½£¬InstrumentID_En=1£¬ÊµÅÌÔÚÏß½»Ò×Ä£Ê½£¬
+
+
+/**
+ * ¶¨ÒåÁË½»Ò×ºÍĞĞÇéµÄÇ°ÖÃ·şÎñÆ÷µØÖ·,ÊµÅÌºÍ·ÂÕæÊ¹ÓÃ²»Í¬µØÖ·
+ */
 
 // ÅäÖÃ²ÎÊı
 char  FRONT_ADDR_1A[] = "tcp://180.168.212.51:41205";		// Ç°ÖÃµØÖ·1½»Ò×:ÊµÅÌ
@@ -54,6 +70,10 @@ char  FRONT_ADDR_3B[] = "tcp://180.168.212.53:41213";		// Ç°ÖÃµØÖ·3ĞĞÇé:ÊµÅÌ ÅÌº
 char  FRONT_ADDR_6A[] = "tcp://asp-sim2-front1.financial-trading-platform.com:26205";	// Ç°ÖÃµØÖ·6ĞĞÇé:·ÂÕæ 17:00¿ªÊ¼
 char  FRONT_ADDR_6B[] = "tcp://asp-sim2-md1.financial-trading-platform.com:26213";		// Ç°ÖÃµØÖ·6ĞĞÇé:·ÂÕæ 17:00¿ªÊ¼
 
+/**
+ * ¶¨ÒåÁËÕËºÅÃÜÂëºÍ¾­¼Í¹«Ë¾±àÂëµÈÕË»§ĞÅÏ¢
+ */
+
 TThostFtdcBrokerIDType	BROKER_ID = "2030";								// ¾­¼Í¹«Ë¾´úÂë
 TThostFtdcInvestorIDType INVESTOR_ID = "88888888";						// Í¶×ÊÕß´úÂë
 TThostFtdcPasswordType  PASSWORD = "123456";							// ÓÃ»§ÃÜÂë
@@ -61,6 +81,10 @@ TThostFtdcPasswordType  PASSWORD = "123456";							// ÓÃ»§ÃÜÂë
 //TThostFtdcInvestorIDType INVESTOR_ID = "00069";						// Í¶×ÊÕß´úÂë:·ÂÕæ"00069","00092"
 //TThostFtdcPasswordType  PASSWORD = "888888";							// ÓÃ»§ÃÜÂë:·ÂÕæ
 
+
+/**
+ * ¶¨ÒåÁË¶©ÔÄµÄºÏÔ¼´úÂëÁĞ±íppInstrumentID
+ */
 //char *ppInstrumentID[] = {"rb1410"};									// ĞĞÇé¶©ÔÄÁĞ±í
 //int iInstrumentID = 1;												// ĞĞÇé¶©ÔÄÊıÁ¿
 //							0		1			2		  3			4		 5			6		   7		8			9		10		11		12		13		14		15		  16		17	   18		 19
@@ -86,9 +110,14 @@ void main(void)
 	void Trading();
 	void test();
     // SendOrder()ÓÃÓÚ·¢ËÍ¶©µ¥¡£
+    // Í¨¹ıSendOrder()º¯Êı·â×°ÁË±¨µ¥¹¦ÄÜ
+    // ºÏÔ¼´úÂë¡¢ÂòÂô·½Ïò¡¢¿ªÆ½²Ö±êÖ¾×÷Îª±¨µ¥º¯ÊıµÄ²ÎÊı
 	void SendOrder(TThostFtdcInstrumentIDType FuturesId,int BuySell,int OpenClose,int i);
 
 
+    /**
+     * ÏÈ³õÊ¼»¯ÈÕÖ¾,¶ÁÈ¡ÅäÖÃĞÅÏ¢
+     */
 	JustRun = true;													//ÕıÔÚÆô¶¯±êÖ¾
     /**
      * Erasefiles()Çå³ıÎÄ¼ş¡£
@@ -105,6 +134,11 @@ void main(void)
 	ReadMdConfiguration();
 	Sleep(2000);
 
+    /**
+     * ´´½¨CTPµÄ½»Ò×ºÍĞĞÇéAPI¶ÔÏó,²¢×¢²áÏàÓ¦µÄ»Øµ÷½Ó¿Ú
+     *
+     * ³õÊ¼»¯Á¬½ÓÇ°ÖÃ·şÎñÆ÷
+     */
     /**
      * µ÷ÓÃº¯Êı³õÊ¼»¯UserApiºÍMdApi¶ÔÏó,Á¬½ÓĞĞÇéºÍ½»Ò×Ç°ÖÃ¡£
      */
@@ -150,7 +184,14 @@ void main(void)
 	Sleep(1000);
 	cerr << "--->>> " << "³õÊ¼»¯Íê³É!" << endl;
 
+
     /**
+     * Ìá¹©ÁË·ÂÕæºÍÊµÅÌÄ£Ê½ÇĞ»»
+     */
+
+    /**
+     * Ö÷Ñ­»·ÖĞµ÷ÓÃSniffer()ºÍTrading()º¯Êı
+     *
      * Ñ­»·µ÷ÓÃSniffer()ºÍTrading()º¯Êı¡£
      */
 	while(RunMode)	//ÊµÅÌ
@@ -162,6 +203,8 @@ void main(void)
 
         /**
          * Trading()¿ÉÄÜÊÇÉú³ÉºÍ·¢ËÍ½»Ò×Ö¸ÁîµÄº¯Êı¡£
+         *
+         * Trading()º¯Êı¿ÉÄÜÊÇÊµÏÖ½»Ò×²ßÂÔºÍÏÂµ¥µÄÂß¼­
          */
 		Trading();
 		Sleep(050);
